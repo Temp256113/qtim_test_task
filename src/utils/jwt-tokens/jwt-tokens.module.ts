@@ -4,8 +4,8 @@ import { JwtTokensService } from './jwt-tokens.service';
 
 @Global()
 @Module({
-    imports: [JwtModule],
-    providers: [JwtTokensService],
-    exports: [JwtTokensService],
+  imports: [JwtModule],
+  providers: [JwtTokensService],
+  exports: [JwtTokensService],
 })
 export class JwtTokensModule {}
