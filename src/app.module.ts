@@ -24,7 +24,6 @@ import { RedisModule } from './redis/redis.module';
         password: config.password,
         database: config.dbName,
         autoLoadEntities: true,
-        synchronize: true,
       }),
     }),
     RedisModule,
