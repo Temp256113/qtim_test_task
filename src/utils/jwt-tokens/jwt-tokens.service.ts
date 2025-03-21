@@ -12,6 +12,16 @@ export interface IJwtTokenPayload {
   exp?: number;
 }
 
+export interface ITokensPairSchema {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export enum TokensTypes {
+  ACCESS_TOKEN = 'access',
+  REFRESH_TOKEN = 'refresh',
+}
+
 @Injectable()
 export class JwtTokensService {
   public static readonly refreshTokenCookieTitle = 'refreshToken';
@@ -40,7 +50,7 @@ export class JwtTokensService {
 
   private async createToken(
     data: { userId: number; username: string },
-    tokenType: 'access' | 'refresh',
+    tokenType: TokensTypes,
   ) {
     const { userId, username } = data;
 
@@ -48,10 +58,19 @@ export class JwtTokensService {
 
     // для jwt токенов время нужно предоставлять в секундах, поэтому такое преобразование
     const iat: number = getUnixTime(currentDate);
-    const exp: number =
-      tokenType === 'access'
-        ? this.getAccessTokenExpireTime(currentDate)
-        : this.getRefreshTokenExpireTime(currentDate);
+
+    let exp: number;
+    let secret: string;
+
+    switch (tokenType) {
+      case TokensTypes.ACCESS_TOKEN:
+        exp = this.getAccessTokenExpireTime(currentDate);
+        secret = this.accessTokenSecret;
+        break;
+      case TokensTypes.REFRESH_TOKEN:
+        exp = this.getRefreshTokenExpireTime(currentDate);
+        secret = this.refreshTokenSecret;
+    }
 
     const payload: IJwtTokenPayload = {
       userId,
@@ -61,16 +80,16 @@ export class JwtTokensService {
     };
 
     return this.jwtService.signAsync(payload, {
-      secret: this.accessTokenSecret,
+      secret,
     });
   }
 
   async createAccessToken(data: { userId: number; username: string }) {
-    return this.createToken(data, 'access');
+    return this.createToken(data, TokensTypes.ACCESS_TOKEN);
   }
 
   async createRefreshToken(data: { userId: number; username: string }) {
-    return this.createToken(data, 'refresh');
+    return this.createToken(data, TokensTypes.REFRESH_TOKEN);
   }
 
   setRefreshTokenInCookie(data: { refreshToken: string; res: Response }): void {
@@ -86,7 +105,7 @@ export class JwtTokensService {
   async createTokensPair(data: {
     userId: number;
     username: string;
-  }): Promise<{ accessToken: string; refreshToken: string }> {
+  }): Promise<ITokensPairSchema> {
     const [accessToken, refreshToken] = await Promise.all([
       this.createAccessToken(data),
       this.createRefreshToken(data),
@@ -104,10 +123,12 @@ export class JwtTokensService {
 
   private async verifyToken(
     token: string,
-    tokenType: 'access' | 'refresh',
+    tokenType: TokensTypes,
   ): Promise<IJwtTokenPayload | null> {
     const secret =
-      tokenType === 'access' ? this.accessTokenSecret : this.refreshTokenSecret;
+      tokenType === TokensTypes.ACCESS_TOKEN
+        ? this.accessTokenSecret
+        : this.refreshTokenSecret;
 
     try {
       const tokenPayload: IJwtTokenPayload = await this.jwtService.verifyAsync(
@@ -125,10 +146,10 @@ export class JwtTokensService {
   }
 
   async verifyAccessToken(token: string): Promise<IJwtTokenPayload | null> {
-    return this.verifyToken(token, 'access');
+    return this.verifyToken(token, TokensTypes.ACCESS_TOKEN);
   }
 
   async verifyRefreshToken(token: string): Promise<IJwtTokenPayload | null> {
-    return this.verifyToken(token, 'refresh');
+    return this.verifyToken(token, TokensTypes.REFRESH_TOKEN);
   }
 }

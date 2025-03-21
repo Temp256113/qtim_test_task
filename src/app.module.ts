@@ -7,6 +7,8 @@ import redisConfig from './config/redis.config';
 import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from './redis/redis.module';
+import { JwtTokensModule } from './utils/jwt-tokens/jwt-tokens.module';
+import { GuardsModule } from './guards/guards.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { RedisModule } from './redis/redis.module';
       }),
     }),
     RedisModule,
+    JwtTokensModule,
+    GuardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
