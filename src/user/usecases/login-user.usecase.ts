@@ -41,8 +41,8 @@ export class LoginUserUsecase
     }
 
     const passwordIsCorrect = await argon2.verify(
-      data.password,
       foundUserByUsername.password,
+      data.password,
     );
 
     if (!passwordIsCorrect) {
