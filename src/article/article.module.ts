@@ -7,8 +7,13 @@ import { CreateArticleUsecase } from './usecases/create-article.usecase';
 import { GetArticlesUsecase } from './usecases/get-articles.usecase';
 import { ArticleRepository } from './repositories/article.repository';
 import { ArticleQueryRepository } from './repositories/article.query-repository';
+import { UpdateArticleUsecase } from './usecases/update-article.usecase';
 
-const usecases = [CreateArticleUsecase, GetArticlesUsecase];
+const usecases = [
+  CreateArticleUsecase,
+  GetArticlesUsecase,
+  UpdateArticleUsecase,
+];
 
 @Module({
   imports: [TypeOrmModule.forFeature([ArticleEntity]), CqrsModule],

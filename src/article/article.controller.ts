@@ -4,6 +4,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -15,6 +17,8 @@ import { UserEntity } from '../user/user.entity';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -26,6 +30,12 @@ import { CreateArticleCommand } from './usecases/create-article.usecase';
 import { GetArticlesDto } from './dtos/get-articles.dto';
 import { GetArticlesSchema } from './dtos/get-articles.schema';
 import { GetArticlesQuery } from './usecases/get-articles.usecase';
+import { UpdateArticleDto } from './dtos/update-article.dto';
+import {
+  cantEditArticleErrDesc,
+  notFoundArticleByIdErrDesc,
+} from './constants';
+import { UpdateArticleCommand } from './usecases/update-article.usecase';
 
 @Controller('/article')
 @ApiTags('article')
@@ -43,9 +53,7 @@ export class ArticleController {
     description: 'Article was successful created',
     type: ArticleSchema,
   })
-  @ApiUnauthorizedResponse({
-    description: 'Access token is not valid',
-  })
+  @ApiUnauthorizedResponse()
   @ApiBearerAuth()
   async createArticle(
     @Body() dto: CreateArticleDto,
@@ -67,5 +75,31 @@ export class ArticleController {
   })
   async getArticles(@Query() dto: GetArticlesDto): Promise<GetArticlesSchema> {
     return this.queryBus.execute(new GetArticlesQuery(dto));
+  }
+
+  @Patch('/:articleId')
+  @ApiOperation({ summary: 'Update article' })
+  @UseGuards(AccessTokenGuard)
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: 'Article was successful updated',
+    type: ArticleSchema,
+  })
+  @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse({
+    description: notFoundArticleByIdErrDesc,
+  })
+  @ApiForbiddenResponse({
+    description: cantEditArticleErrDesc,
+  })
+  async updateArticle(
+    @Param('articleId') articleId: number,
+    @Body() dto: UpdateArticleDto,
+    @UserFromRequest() user: UserEntity,
+  ) {
+    return this.commandBus.execute(
+      new UpdateArticleCommand(articleId, user.id, dto),
+    );
   }
 }
