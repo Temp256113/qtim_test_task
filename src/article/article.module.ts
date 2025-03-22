@@ -8,11 +8,13 @@ import { GetArticlesUsecase } from './usecases/get-articles.usecase';
 import { ArticleRepository } from './repositories/article.repository';
 import { ArticleQueryRepository } from './repositories/article.query-repository';
 import { UpdateArticleUsecase } from './usecases/update-article.usecase';
+import { DeleteArticleUsecase } from './usecases/delete-article.usecase';
 
 const usecases = [
   CreateArticleUsecase,
   GetArticlesUsecase,
   UpdateArticleUsecase,
+  DeleteArticleUsecase,
 ];
 
 @Module({

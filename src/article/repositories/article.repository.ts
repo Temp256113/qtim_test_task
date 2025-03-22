@@ -42,4 +42,8 @@ export class ArticleRepository {
       articleId,
     ) as any as ArticleSchema;
   }
+
+  async deleteArticle(articleId: number) {
+    await this.articlesRepository.delete(articleId);
+  }
 }
