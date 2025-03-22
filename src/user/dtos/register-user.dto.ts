@@ -1,18 +1,9 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { NotNullableString } from '../../utils/decorators/not-nullable-string.decorator';
 
 export class RegisterUserDto {
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    example: 'temp256113',
-  })
+  @NotNullableString('temp256113')
   username: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({
-    example: 'p4$$w0rd',
-  })
+  @NotNullableString('p4$$w0rd')
   password: string;
 }
