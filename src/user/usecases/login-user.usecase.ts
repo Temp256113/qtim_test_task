@@ -40,10 +40,16 @@ export class LoginUserUsecase
       throw new UnauthorizedException(unauthorizedExceptionDesc);
     }
 
-    const passwordIsCorrect = await argon2.verify(
-      foundUserByUsername.password,
-      data.password,
-    );
+    let passwordIsCorrect: boolean;
+
+    try {
+      passwordIsCorrect = await argon2.verify(
+        foundUserByUsername.password,
+        data.password,
+      );
+    } catch (err) {
+      passwordIsCorrect = false;
+    }
 
     if (!passwordIsCorrect) {
       throw new UnauthorizedException(unauthorizedExceptionDesc);

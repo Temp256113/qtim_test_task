@@ -27,8 +27,11 @@ export class RegisterUserUsecase
       throw new ConflictException('Username already taken');
     }
 
-    command.password = await argon2.hash(command.password);
+    const encryptedPassword = await argon2.hash(command.password);
 
-    await this.userRepository.createUser(command);
+    await this.userRepository.createUser({
+      ...command,
+      password: encryptedPassword,
+    });
   }
 }
