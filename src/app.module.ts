@@ -9,6 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from './redis/redis.module';
 import { JwtTokensModule } from './utils/jwt-tokens/jwt-tokens.module';
 import { GuardsModule } from './guards/guards.module';
+import { UserModule } from './user/user.module';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { GuardsModule } from './guards/guards.module';
     RedisModule,
     JwtTokensModule,
     GuardsModule,
+    UserModule,
+    ArticleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
