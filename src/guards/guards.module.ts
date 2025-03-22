@@ -7,6 +7,6 @@ import { UserModule } from '../user/user.module';
 @Module({
   imports: [UserModule],
   providers: [AccessTokenGuard, RefreshTokenGuard],
-  exports: [AccessTokenGuard, RefreshTokenGuard],
+  exports: [AccessTokenGuard, RefreshTokenGuard, UserModule],
 })
 export class GuardsModule {}
