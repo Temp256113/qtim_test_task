@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import pgConfig from './config/pg-config';
 import redisConfig from './config/redis.config';
@@ -36,7 +34,7 @@ import { ArticleModule } from './article/article.module';
     UserModule,
     ArticleModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
