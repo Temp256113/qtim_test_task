@@ -1,16 +1,9 @@
 import {
-  IJwtTokenPayload,
   JwtTokensService,
   TokensTypes,
 } from '../utils/jwt-tokens/jwt-tokens.service';
-import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { UserQueryRepository } from '../user/repositories/user.query-repository';
-import { UserEntity } from '../user/user.entity';
 import { BaseTokenGuard, IRequestWithUser } from './base-token.guard';
 
 @Injectable()
